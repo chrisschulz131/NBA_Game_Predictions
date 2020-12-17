@@ -1,0 +1,17 @@
+
+nba api example to get player info
+# player_dict = players.get_players()
+# bron = [player for player in player_dict if player['full_name'] == 'LeBron James'][0]
+# print(bron)
+
+nba api example to get team info
+# team_dict = teams.get_teams()
+# suns = [team for team in team_dict if team['abbreviation'] == 'PHX'][0]
+# print(suns)
+
+nba api example to get team info for every season the team has played
+# suns_id = suns['id']
+# suns_games = leaguegamefinder.LeagueGameFinder(team_id_nullable=suns_id).get_data_frames()[0]
+# suns_games.to_csv('suns.csv')     example on how to save data out to a csv file
+# print(suns_games)
+
