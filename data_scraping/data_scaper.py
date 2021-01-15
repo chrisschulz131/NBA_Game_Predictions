@@ -19,7 +19,7 @@ class Scraper:
 
     def get_teams(self):
         """
-        method to get all nba teams using the NBA api.
+        method to get all nba teams using the NBA api and create data frame with box scores.
         """
         self.team_info = teams.get_teams()
         for team in self.team_info:
@@ -66,9 +66,6 @@ class Scraper:
                     home_points.append(int(matching_game_id.iloc[[1]]['PTS']))
                     away_points.append(int(team['PTS']))
 
-                # manually encode our team abbreviations
-                # team['TEAM_ABBREVIATION'] = team['TEAM_ABBREVIATION'].replace(team['TEAM_ABBREVIATION'],
-                #                                                               str(team_abbvs_dict.get(team['TEAM_ABBREVIATION'])))
             else:
                 self.df.drop(matching_game_id.index, inplace=True)
 

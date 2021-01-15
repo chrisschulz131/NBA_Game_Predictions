@@ -5,11 +5,12 @@ import pandas as pd
 from sklearn import linear_model
 from sklearn.preprocessing import LabelEncoder, OrdinalEncoder
 from sklearn.compose import ColumnTransformer
-
+from model.model_class import Model
 
 if __name__ == '__main__':
-    pass
 
+    model = Model('data_scraping/2019-20-stats.csv')
+    model.preprocess()
 
 
 
