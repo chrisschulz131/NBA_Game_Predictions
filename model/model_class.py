@@ -1,5 +1,5 @@
 from nba_api.stats.static import teams
-from sklearn import linear_model
+from sklearn import linear_model, model_selection
 import pandas as pd
 
 
@@ -9,7 +9,7 @@ class Model:
     """
     def __init__(self, csv_path):
         self.df = pd.read_csv(csv_path)
-        self.model = linear_model.LinearRegression()
+        self.model = linear_model.LogisticRegression()
         # having the team abbreviations and their mapped encoding is a good idea.
         self.team_abbvs_dict = self.get_team_num_vals()
 
@@ -41,8 +41,34 @@ class Model:
 
         team_abbvs_dict = {}
         team_info = teams.get_teams()
+        print(team_info)
 
         for team in range(0, len(team_info)):
             team_abbvs_dict[team_info[team]['abbreviation']] = team
 
+        print(team_abbvs_dict)
+
         return team_abbvs_dict
+
+    def train_model(self):
+        self.df.drop(columns=["GAME_DATE", "MATCHUP", "HOME_PTS", "AWAY_PTS"], inplace=True)
+        y_vals = self.df[['HOME_WL']]
+        self.df.drop(columns="HOME_WL", inplace=True)
+        X_train, X_test, y_train, y_test = model_selection.train_test_split(self.df, y_vals, test_size=0.25)
+        self.model.fit(X_train, y_train)
+
+        print(self.df.columns)
+        # print(X_train)
+        print("\n")
+        print(y_train)
+        print("\n")
+        print(self.model.score(X_test, y_test))
+        print("\n")
+        print(X_test)
+        print(y_test)
+
+        tonights_games = pd.read_csv('data_scraping/tonights_games.csv')
+
+        print(self.model.predict_proba(tonights_games))
+        print(self.model.classes_)
+

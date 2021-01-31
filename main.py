@@ -12,6 +12,7 @@ if __name__ == '__main__':
     model = Model('data_scraping/2019-20-stats.csv')
     # preprocess will encode the teams and WL columns
     model.preprocess()
+    model.train_model()
 
 
 
