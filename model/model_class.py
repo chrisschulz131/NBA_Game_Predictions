@@ -1,3 +1,4 @@
+from nba_api.stats.static import teams
 from sklearn import linear_model
 import pandas as pd
 
@@ -16,6 +17,8 @@ class Model:
         """
         """
         self.encode_teams()
+        self.encode_wins_losses()
+        self.df.to_csv("encoded-stats.csv", index=False)
 
     def encode_teams(self):
         """
@@ -24,21 +27,22 @@ class Model:
         """
 
         for abbv in self.team_abbvs_dict:
-            self.df['TEAM_ABBREVIATION'] = self.df['TEAM_ABBREVIATION'].replace(abbv, str(self.team_abbvs_dict[abbv]))
-            self.df['HOME_TEAM'] = self.df['HOME_TEAM'].replace(abbv, str(self.team_abbvs_dict[abbv]))
-            self.df['AWAY_TEAM'] = self.df['AWAY_TEAM'].replace(abbv, str(self.team_abbvs_dict[abbv]))
+            self.df['HOME_ABRV'] = self.df['HOME_ABRV'].replace(abbv, str(self.team_abbvs_dict[abbv]))
+            self.df['AWAY_ABRV'] = self.df['AWAY_ABRV'].replace(abbv, str(self.team_abbvs_dict[abbv]))
 
     def encode_wins_losses(self):
         """
         Wins = 1, Losses = 0
         """
-        raise NotImplementedError
+        self.df['HOME_WL'] = self.df['HOME_WL'].replace("W", "1")
+        self.df['HOME_WL'] = self.df['HOME_WL'].replace("L", "0")
 
     def get_team_num_vals(self):
 
         team_abbvs_dict = {}
-        team_abbvs = sorted(self.df.TEAM_ABBREVIATION.unique())
-        for team in range(0, len(team_abbvs)):
-            team_abbvs_dict[team_abbvs[team]] = team
+        team_info = teams.get_teams()
+
+        for team in range(0, len(team_info)):
+            team_abbvs_dict[team_info[team]['abbreviation']] = team
 
         return team_abbvs_dict
