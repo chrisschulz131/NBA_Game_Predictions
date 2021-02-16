@@ -9,7 +9,7 @@ class Model:
     """
     def __init__(self, csv_path):
         self.df = pd.read_csv(csv_path)
-        self.model = linear_model.LogisticRegression()
+        self.model = linear_model.LogisticRegression(max_iter=2000)
         # having the team abbreviations and their mapped encoding is a good idea.
         self.team_abbvs_dict = self.get_team_num_vals()
 
@@ -51,24 +51,16 @@ class Model:
         return team_abbvs_dict
 
     def train_model(self):
-        self.df.drop(columns=["GAME_DATE", "MATCHUP", "HOME_PTS", "AWAY_PTS"], inplace=True)
+
+        self.df.drop(columns=["GAME_DATE", "MATCHUP", "TEAM_ID", "HOME_PTS", "AWAY_PTS"], inplace=True)
         y_vals = self.df[['HOME_WL']]
         self.df.drop(columns="HOME_WL", inplace=True)
         X_train, X_test, y_train, y_test = model_selection.train_test_split(self.df, y_vals, test_size=0.25)
-        self.model.fit(X_train, y_train)
+        self.model.fit(X_train, y_train.values.ravel())
 
-        print(self.df.columns)
-        # print(X_train)
-        print("\n")
-        print(y_train)
-        print("\n")
-        print(self.model.score(X_test, y_test))
-        print("\n")
-        print(X_test)
-        print(y_test)
-
+        # todo write method in data scraper to get today's games and put it in a csv file.
         tonights_games = pd.read_csv('data_scraping/tonights_games.csv')
 
+        # todo run this 10,000 times and average out the predictions
         print(self.model.predict_proba(tonights_games))
-        print(self.model.classes_)
 
